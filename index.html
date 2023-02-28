@@ -25,7 +25,7 @@
 </head>
 <body>
 
-    <form action="">
+<div id="diverror" style="color:red"></div>
 
         <div class="form-group">    
             <div class="wrapper" style="border: solid red 1px;">
@@ -86,7 +86,7 @@
        
         //#region images
         
-
+            const diverror= document.getElementById("diverror");
             const btnUploadImage=document.querySelectorAll(".btn-upload-image");
             const btnRotateImage=document.querySelectorAll(".btn-rotate-image");
 
@@ -186,6 +186,7 @@
             };
 
 
+               //Button take foto
                btnUploadImage.forEach(btn=>{
                 btn.addEventListener("click",function(e){
                     e.preventDefault();
@@ -202,22 +203,41 @@
                     fileinput.addEventListener("change",async (e)=>{                                   
                         if(e.target.type==="file")
                         {
-                            let file=e.target.files[0];
+
+                            try {
+                                adddlert("Welcome guest!");
+                            }
+                            catch(err) {
+                                diverror.innerHTML += err.message + "<br/>";
+                            }
+
+                            try {
+                               
+                                let file=e.target.files[0];
                             
-                            const base64=await convertImgToResizedBase64(file);  
-                            let stripedbase64=stripBase64(base64);
+                                const base64=await convertImgToResizedBase64(file);  
+                                let stripedbase64=stripBase64(base64);
 
-                            //set size in info                                                    
-                           // spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
-                            divBtnRotate.style.display = "block";
+                                //set size in info                                                    
+                                // spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                                divBtnRotate.style.display = "block";
 
-                            //display img
-                            imgThumnail.src=base64;
-                           
-                            //set value in hidden input 
-                            hiddenBase64.value=stripedbase64; 
+                                //display img
+                                imgThumnail.src=base64;
+                            
+                                //set value in hidden input 
+                                hiddenBase64.value=stripedbase64; 
+
+
+                            }
+                            catch(err) {
+                                diverror.innerHTML += err.message + "<br/>";
+                            }
+
+
+
                                               
-                            //REMOVE file-element?
+                            
                         } 
 
                     } );
