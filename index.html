@@ -83,7 +83,7 @@
 
 
     <script>
-        'use strict'
+       
         //#region images
         
 
@@ -138,7 +138,7 @@
                             ctx.rotate(degrees * Math.PI / 180);
                             ctx.drawImage(image, image.width / -2, image.height / -2);
                             let dataURL = canvas.toDataURL("image/jpeg");    
-                            image.onload = null;//clean up memory                        
+                           // image.onload = null;//clean up memory                        
                             resolve(dataURL);  
                         };
                         image.src = srcBase64;
@@ -175,7 +175,7 @@
                                     canvas.getContext('2d').drawImage(image, 0, 0, w, h);
                                     //const dataURL = canvas.toDataURL("image/jpeg",1.0);
                                     const dataURL = canvas.toDataURL("image/jpeg");
-                                    image.onload = null;//clean up memory
+                                   // image.onload = null;//clean up memory
                                     resolve(dataURL);
                                 }           
                     };
