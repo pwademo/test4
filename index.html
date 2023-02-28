@@ -26,6 +26,8 @@
 <body>
 
 <div id="diverror" style="color:red"></div>
+<div id="divdebug" style="color:green"></div>
+
 
         <div class="form-group">    
             <div class="wrapper" style="border: solid red 1px;">
@@ -87,6 +89,7 @@
         //#region images
         
             const diverror= document.getElementById("diverror");
+            const divdebug= document.getElementById("divdebug");
             const btnUploadImage=document.querySelectorAll(".btn-upload-image");
             const btnRotateImage=document.querySelectorAll(".btn-rotate-image");
 
@@ -152,10 +155,15 @@
                 const convertImgToResizedBase64 = (file) => {
                     const max_size = 600;//max width or height
 
+                    divdebug.innerHTML += " START convertImgToResizedBase64" + "<br/>";
+                    divdebug.innerHTML += "Filetype" + file.type + "<br/>";
+
+
                     return new Promise((resolve, reject) => {            
                         let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','image/gif','image/bmp'];            
                         if (allowedExtension.indexOf(file.type)===-1) {
                             reject(`${file.type} is not a valid filetype`);
+                            divdebug.innerHTML += `${file.type} is not a valid filetype` + "<br/>";
                         }
                         const fileReader = new FileReader();
                         fileReader.readAsDataURL(file);
@@ -180,6 +188,7 @@
                                 }           
                     };
                     fileReader.onerror = (error) => {
+                        divdebug.innerHTML += `fileReader.onerror ${error}` + "<br/>";
                         reject(error);
                     };
                 });
@@ -232,11 +241,7 @@
                             }
                             catch(err) {
                                 diverror.innerHTML += err.message + "<br/>";
-                            }
-
-
-
-                                              
+                            }                                              
                             
                         } 
 
