@@ -208,7 +208,7 @@
                             let stripedbase64=stripBase64(base64);
 
                             //set size in info                                                    
-                            spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                           // spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
                             divBtnRotate.style.display = "block";
 
                             //display img
@@ -247,7 +247,7 @@
                     imgThumnail.setAttribute('src', resultBase64);
                     const stripedbase64=stripBase64(resultBase64);
                     hiddenBase64.value = stripedbase64;                                            
-                    spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                   // spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
                 })
 
             }); 
