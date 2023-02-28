@@ -32,12 +32,15 @@
         <div class="form-group">    
             <div class="wrapper" style="border: solid red 1px;">
                         <!-- Disse to knapper har tilsluttet eventlisentner -->         
-
+                        <p>
+                            <input type="file" name="" id="" class="fileinput">
+                        </p>         
                         <p>               
                             <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
                             <div class="div-btn-rotate">
                                 <button class="btn-rotate-image"><i class="fa fa-rotate-left"></i></button><button class="btn-rotate-image"><i class="fa fa-rotate-right"></i></button>
-                            </div> </p>
+                            </div> 
+                        </p>
                         <!-- s -->
                         <p><span class="spanInfo"></span></p>
                         
@@ -55,7 +58,10 @@
 
         <div class="form-group">    
             <div class="wrapper" style="border: solid red 1px;">
-                        <!-- Disse to knapper har tilsluttet eventlisentner -->         
+                        <!-- Disse to knapper har tilsluttet eventlisentner -->
+                        <p>
+                            <input type="file" name="" id="" class="fileinput">
+                        </p>         
                         <p>               
                             <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
                             <div class="div-btn-rotate">
@@ -205,7 +211,7 @@
                     const hiddenBase64=wrapper.querySelector(".hiddenBase64");
                     const imgThumnail=wrapper.querySelector(".img-thumnail");
                     const divBtnRotate=wrapper.querySelector(".div-btn-rotate");
-                    const fileinput=document.createElement("input");
+                    const fileinput=wrapper.querySelector(".fileinput");
                     
 
                     fileinput.type="file";
