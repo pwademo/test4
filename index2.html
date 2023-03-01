@@ -202,7 +202,7 @@
 
 
                //Button take foto
-               btnUploadImage.forEach(btn=>{
+               Array.from(btnUploadImage).forEach(btn=>{
                 divdebug.innerHTML += "ForEach btnBillede" + "<br/>";
                 btn.addEventListener("click",function(e){
                     e.preventDefault();
@@ -245,7 +245,7 @@
                 }); 
  
 
-            btnRotateImage.forEach(btn=>{
+            Array.from(btnRotateImage).forEach(btn=>{
                 divdebug.innerHTML += "ForEach btnRotate" + "<br/>";
                 btn.addEventListener("click",async function(e){
                     e.preventDefault();
