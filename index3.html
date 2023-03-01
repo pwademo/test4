@@ -1,0 +1,47 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="diverror" style="color:red"></div>
+<div id="divdebug" style="color:green">DEBUG:<br/></div>
+<a href="index.html">Menu</a>
+<h1>Index1</h1>
+<p>Helt simpelt index type file til Base64 og img</p>
+
+
+<div class="wrapper" style="border: solid red 1px;">
+    <!-- Disse to knapper har tilsluttet eventlisentner -->         
+    <p>
+        <input type="file" name="" id="" class="fileinput">
+    </p>         
+    <p>               
+        <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
+        <div class="div-btn-rotate">
+            <button class="btn-rotate-image"><i class="fa fa-rotate-left"></i></button><button class="btn-rotate-image"><i class="fa fa-rotate-right"></i></button>
+        </div> 
+    </p>
+    <!-- s -->
+    <p><span class="spanInfo"></span></p>
+    
+    <p><img class="img-thumnail" src="" alt=""></p>
+
+    <!-- Dette skjulte felt er container for billeder mens det er på clienten
+         Det sendes til server ved submit.
+         Indtil da kan det modtage upload af nye billeder.
+         Det kan også modtage roteret billede fra img/rotate
+    -->
+    <input type="text" class="hiddenBase64">
+</div>   
+
+
+<script>    
+
+
+
+</script>
+</body>
+</html>

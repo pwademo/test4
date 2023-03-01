@@ -1,0 +1,283 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <style>
+        .wrapper{
+            margin:5px;
+            padding: 5px
+        }
+        .btn-rotate-image{
+            
+            border-radius: 50%;
+            border-width: 0.05;
+            margin:4px;
+            padding:3px;
+        }
+        .div-btn-rotate{
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="diverror" style="color:red"></div>
+<div id="divdebug" style="color:green">DEBUG:<br/></div>
+<a href="index.html">Menu</a>
+<h1>Index1</h1>
+
+        <div class="form-group">    
+            <div class="wrapper" style="border: solid red 1px;">
+                        <!-- Disse to knapper har tilsluttet eventlisentner -->         
+                        <p>
+                            <input type="file" name="" id="" class="fileinput">
+                        </p>         
+                        <p>               
+                            <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
+                            <div class="div-btn-rotate">
+                                <button class="btn-rotate-image"><i class="fa fa-rotate-left"></i></button><button class="btn-rotate-image"><i class="fa fa-rotate-right"></i></button>
+                            </div> 
+                        </p>
+                        <!-- s -->
+                        <p><span class="spanInfo"></span></p>
+                        
+                        <p><img class="img-thumnail" src="" alt=""></p>
+
+                        <!-- Dette skjulte felt er container for billeder mens det er på clienten
+                             Det sendes til server ved submit.
+                             Indtil da kan det modtage upload af nye billeder.
+                             Det kan også modtage roteret billede fra img/rotate
+                        -->
+                        <input type="text" class="hiddenBase64">
+            </div>   
+        </div>
+
+
+        <div class="form-group">    
+            <div class="wrapper" style="border: solid red 1px;">
+                        <!-- Disse to knapper har tilsluttet eventlisentner -->
+                        <p>
+                            <input type="file" name="" id="" class="fileinput">
+                        </p>         
+                        <p>               
+                            <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
+                            <div class="div-btn-rotate">
+                                <button class="btn-rotate-image"><i class="fa fa-rotate-left"></i></button><button class="btn-rotate-image"><i class="fa fa-rotate-right"></i></button>
+                            </div>
+                        </p>
+                        <!-- s -->
+                        <p><span class="spanInfo"></span></p>
+                        
+                        <p><img class="img-thumnail" src="" alt=""></p>
+
+                        <!-- Dette skjulte felt er container for billeder mens det er på clienten
+                             Det sendes til server ved submit.
+                             Indtil da kan det modtage upload af nye billeder.
+                             Det kan også modtage roteret billede fra img/rotate
+                        -->
+                        <input type="text" class="hiddenBase64">
+            </div>   
+        </div>
+
+
+
+    
+
+
+
+
+
+    <script>
+       
+        //#region images
+        
+            const diverror= document.getElementById("diverror");
+            const divdebug= document.getElementById("divdebug");
+            const btnUploadImage=document.querySelectorAll(".btn-upload-image");
+            const btnRotateImage=document.querySelectorAll(".btn-rotate-image");
+
+               //remove data:image part from a base64 string
+               const stripBase64=(base64)=>{
+                return base64.replace(/^data:image\/[a-z]+;base64,/, "");
+               }
+
+               const getSizeOfBase64InMb=(stripedbase64)=>{
+                   // console.log(stripedbase64);
+                    let fileSizeByte = atob(stripedbase64).length;  
+                    return (fileSizeByte / (1024 ** 2)).toFixed(3);
+                    
+               }
+
+
+
+               function rotate(srcBase64, degrees, callback) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const image = new Image();
+
+                image.onload = function () {
+                    canvas.width = degrees % 180 === 0 ? image.width : image.height;
+                    canvas.height = degrees % 180 === 0 ? image.height : image.width;
+
+                    ctx.translate(canvas.width / 2, canvas.height / 2);
+                    ctx.rotate(degrees * Math.PI / 180);
+                    ctx.drawImage(image, image.width / -2, image.height / -2);
+                    let dataURL = canvas.toDataURL();
+                    callback(dataURL);  
+                };
+                image.src = srcBase64;
+            }
+
+
+               const rotateBase64 = (srcBase64, degrees) => {
+                    return new Promise((resolve, reject) => { 
+
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const image = new Image();
+
+                        image.onload = function () {
+                            canvas.width = degrees % 180 === 0 ? image.width : image.height;
+                            canvas.height = degrees % 180 === 0 ? image.height : image.width;
+
+                            ctx.translate(canvas.width / 2, canvas.height / 2);
+                            ctx.rotate(degrees * Math.PI / 180);
+                            ctx.drawImage(image, image.width / -2, image.height / -2);
+                            let dataURL = canvas.toDataURL("image/jpeg");
+                            resolve(dataURL);  
+                        };
+                        image.src = srcBase64;
+                    }); 
+                }
+
+
+
+
+
+                const convertImgToResizedBase64 = (file) => {
+                    const max_size = 600;//max width or height
+
+                    divdebug.innerHTML += " START convertImgToResizedBase64" + "<br/>";
+                    divdebug.innerHTML += "Filetype" + file.type + "<br/>";
+
+
+                    return new Promise((resolve, reject) => {            
+                        let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','image/gif','image/bmp'];            
+                        if (allowedExtension.indexOf(file.type)===-1) {
+                            reject(`${file.type} is not a valid filetype`);
+                            divdebug.innerHTML += `${file.type} is not a valid filetype` + "<br/>";
+                        }
+                        const fileReader = new FileReader();
+                        fileReader.readAsDataURL(file);
+                        fileReader.onload = (ev) => {
+                            const image = new Image();                    
+                                image.src = ev.target.result;
+                                image.onload = (imageEvent) =>
+                                {                        
+                                    let w = image.width;
+                                    let h = image.height;        
+                                    if (w > h) {  if (w > max_size) { h*=max_size/w; w=max_size; }
+                                    } else     {  if (h > max_size) { w*=max_size/h; h=max_size; } }
+                    
+                                    const canvas = document.createElement('canvas');
+                                    canvas.width = w;
+                                    canvas.height = h;
+                                    canvas.getContext('2d').drawImage(image, 0, 0, w, h);
+                                    //const dataURL = canvas.toDataURL("image/jpeg",1.0);
+                                    const dataURL = canvas.toDataURL("image/jpeg");
+                                   // image.onload = null;//clean up memory
+                                    resolve(dataURL);
+                                }           
+                    };
+                    fileReader.onerror = (error) => {
+                        divdebug.innerHTML += `fileReader.onerror ${error}` + "<br/>";
+                        reject(error);
+                    };
+                });
+            };
+
+
+               //Button take foto
+               btnUploadImage.forEach(btn=>{
+                btn.addEventListener("click",function(e){
+                    e.preventDefault();
+                    //traverse up to parent div 
+
+                    divdebug.innerHTML += "START Trykket på knappen Billede" + "<br/>";
+
+                    const wrapper=this.closest(".wrapper");
+
+                    console.log(wrapper);
+                    divdebug.innerHTML +="Wrapper " + wrapper + "<br/>";
+
+                    const spanInfo=wrapper.querySelector(".spanInfo");
+                    const hiddenBase64=wrapper.querySelector(".hiddenBase64");
+                    const imgThumnail=wrapper.querySelector(".img-thumnail");
+                    const divBtnRotate=wrapper.querySelector(".div-btn-rotate");
+                    const fileinput=wrapper.querySelector(".fileinput");
+                    
+
+                    //fileinput.type="file";
+                    fileinput.addEventListener("change",async (e)=>{                                   
+                        if(e.target.type==="file")
+                        {
+
+                            try {                      }
+                            catch(err) { diverror.innerHTML += err.message + "<br/>";  }
+                               
+                                let file=e.target.files[0];
+                            
+                                const base64=await convertImgToResizedBase64(file);  
+                                let stripedbase64=stripBase64(base64);
+
+                                //set size in info                                                    
+                                spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                                divBtnRotate.style.display = "block";
+
+                                //display img
+                                imgThumnail.src=base64;
+                            
+                                //set value in hidden input 
+                                hiddenBase64.value=stripedbase64;                                         
+                            
+                        } 
+
+                    } );
+                    fileinput.click();//virtuel click on fileinput
+
+                });
+
+                }); 
+ 
+            btnRotateImage.forEach(btn=>{
+                btn.addEventListener("click",async function(e){
+                    e.preventDefault();
+                    //traverse up to parent div 
+                    const wrapper=this.closest(".wrapper");
+
+                    //is rotate left og right button pressed?
+                    let degrees=0;
+                    if(this.querySelector(".fa.fa-rotate-left")!=null) degrees=-90;
+                    if(this.querySelector(".fa.fa-rotate-right")!=null) degrees=90;
+
+                    //select siblings
+                    const spanInfo=wrapper.querySelector(".spanInfo");
+                    const hiddenBase64=wrapper.querySelector(".hiddenBase64");                    
+                    const imgThumnail=wrapper.querySelector(".img-thumnail");
+
+                    const resultBase64=await rotateBase64(imgThumnail.attributes.src.value, degrees);
+                    imgThumnail.setAttribute('src', resultBase64);
+                    const stripedbase64=stripBase64(resultBase64);
+                    hiddenBase64.value = stripedbase64;                                            
+                    spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                })
+
+            }); 
+        //#endregion images
+    </script>
+</body>
+</html>
