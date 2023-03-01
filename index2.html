@@ -203,6 +203,7 @@
 
                //Button take foto
                btnUploadImage.forEach(btn=>{
+                divdebug.innerHTML += "ForEach btnBillede" + "<br/>";
                 btn.addEventListener("click",function(e){
                     e.preventDefault();
                     //traverse up to parent div 
@@ -217,10 +218,7 @@
                     fileinput.type="file";
                     fileinput.addEventListener("change",async (e)=>{                                   
                         if(e.target.type==="file")
-                        {
-
-                            try {                      }
-                            catch(err) { diverror.innerHTML += err.message + "<br/>";  }
+                        {     
                                
                                 let file=e.target.files[0];
                             
@@ -246,7 +244,9 @@
 
                 }); 
  
+
             btnRotateImage.forEach(btn=>{
+                divdebug.innerHTML += "ForEach btnRotate" + "<br/>";
                 btn.addEventListener("click",async function(e){
                     e.preventDefault();
                     //traverse up to parent div 

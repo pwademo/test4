@@ -17,30 +17,54 @@
     <!-- Disse to knapper har tilsluttet eventlisentner -->         
     <p>
         <input type="file" name="" id="" class="fileinput">
-    </p>         
-    <p>               
-        <button class="btn-upload-image"><i class="fa fa-camera"></i> Billede</button>
-        <div class="div-btn-rotate">
-            <button class="btn-rotate-image"><i class="fa fa-rotate-left"></i></button><button class="btn-rotate-image"><i class="fa fa-rotate-right"></i></button>
-        </div> 
-    </p>
-    <!-- s -->
-    <p><span class="spanInfo"></span></p>
-    
+    </p> 
+    <p><span class="spanInfo"></span></p>    
     <p><img class="img-thumnail" src="" alt=""></p>
-
-    <!-- Dette skjulte felt er container for billeder mens det er på clienten
-         Det sendes til server ved submit.
-         Indtil da kan det modtage upload af nye billeder.
-         Det kan også modtage roteret billede fra img/rotate
-    -->
     <input type="text" class="hiddenBase64">
 </div>   
 
 
 <script>    
 
+              //Button take foto
+              btnUploadImage.forEach(btn=>{
+                btn.addEventListener("click",function(e){
+                    e.preventDefault();
+                    //traverse up to parent div 
+                    const wrapper=this.closest(".wrapper");
+                    const spanInfo=wrapper.querySelector(".spanInfo");
+                    const hiddenBase64=wrapper.querySelector(".hiddenBase64");
+                    const imgThumnail=wrapper.querySelector(".img-thumnail");
+                    const divBtnRotate=wrapper.querySelector(".div-btn-rotate");
+                    const fileinput=wrapper.querySelector(".fileinput");
+                    
 
+                    fileinput.type="file";
+                    fileinput.addEventListener("change",async (e)=>{                                   
+                        if(e.target.type==="file")
+                        {     
+                               
+                                let file=e.target.files[0];
+                            
+                                const base64=await convertImgToResizedBase64(file);  
+                                let stripedbase64=stripBase64(base64);
+
+                                //set size in info                                                    
+                                spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                                divBtnRotate.style.display = "block";
+
+                                //display img
+                                imgThumnail.src=base64;
+                            
+                                //set value in hidden input 
+                                hiddenBase64.value=stripedbase64;                                         
+                            
+                        } 
+
+                    } );
+                    fileinput.click();//virtuel click on fileinput
+
+                });
 
 </script>
 </body>
