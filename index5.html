@@ -6,10 +6,15 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <style>
-      
+      body{
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
         .wrapper{
             margin:5px;
-            padding: 5px
+            padding: 5px;
+            border: solid 1px gray;
+            border-radius: 5px;;
         }
         .btn-rotate-image{
             
@@ -18,22 +23,33 @@
             margin:4px;
             padding:3px;
         }
-/*         .div-btn-rotate{
-            display: none;
-        } */
 
+         .div-btn-rotate{
+            display: none;
+        } 
+
+        .spanInfo{
+            background-color: aqua;
+            padding:4px;
+            display:none; 
+            border-radius: 5px;;
+        }
+
+        .hiddenBase64{
+            display: none;
+        }
    
     </style>
 </head>
 <body>
     <div id="diverror" style="color:red"></div>
-<div id="divdebug" style="color:green">DEBUG:<br/></div>
+<div id="divdebug" style="color:green"><br/></div>
 <a href="index.html">Menu</a>
 <h1>Index5</h1>
-<p>Helt simpelt index type file til Base64 og img</p>
 
 
-<div class="wrapper" style="border: solid red 1px;">
+
+<div class="wrapper" >
     <!-- Disse to knapper har tilsluttet eventlisentner -->         
     <p>
         <input type="file" name="" id="" class="fileinput" style="display: none;">
@@ -53,8 +69,8 @@
     <p><img class="img-thumnail" src="" alt=""></p>
     <input type="text" class="hiddenBase64">
 </div>   
-<div class="wrapper" style="border: solid red 1px;">
-    <!-- Disse to knapper har tilsluttet eventlisentner -->         
+<div class="wrapper" >
+    <!-- Disse knapper har tilsluttet eventlisentner -->         
     <p>
         <input type="file" name="" id="" class="fileinput" style="display: none;">
     </p> 
@@ -76,13 +92,9 @@
 
 <script>    
            const btnUploadImage=document.querySelectorAll(".btn-upload-image");
-           //const btnUploadImage=document.getElementById("btnImage");
-            const btnRotateImage=document.querySelectorAll(".btn-rotate-image");
-        //    const btnRotateImage=document.getElementById("btnRotate");
+           const btnRotateImage=document.querySelectorAll(".btn-rotate-image");
 
-
-
-
+            /*Denne funktion roterer en base64*/
             const rotateBase64 = (srcBase64, degrees) => {
                     return new Promise((resolve, reject) => { 
 
@@ -108,19 +120,15 @@
 
 
 
-
+            /*Denne funktion tager et billede og returnere det som base64 i jpeg-format*/
             const convertImgToResizedBase64 = (file) => {
-                    const max_size = 600;//max width or height
-
-                    divdebug.innerHTML += " START convertImgToResizedBase64" + "<br/>";
-                    divdebug.innerHTML += "Filetype" + file.type + "<br/>";
+                    const max_size = 600;//max width or height             
 
 
                     return new Promise((resolve, reject) => {            
                         let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','image/gif','image/bmp'];            
                         if (allowedExtension.indexOf(file.type)===-1) {
                             reject(`${file.type} is not a valid filetype`);
-                            divdebug.innerHTML += `${file.type} is not a valid filetype` + "<br/>";
                         }
                         const fileReader = new FileReader();
                         fileReader.readAsDataURL(file);
@@ -145,7 +153,6 @@
                                 }           
                     };
                     fileReader.onerror = (error) => {
-                        divdebug.innerHTML += `fileReader.onerror ${error}` + "<br/>";
                         reject(error);
                     };
                 });
@@ -154,19 +161,18 @@
 
                //remove data:image part from a base64 string
                const stripBase64=(base64)=>{
-                return base64.replace(/^data:image\/[a-z]+;base64,/, "");
+                    return base64.replace(/^data:image\/[a-z]+;base64,/, "");
                }
 
+               /*Denne funktion returnerer størrelsen på base64*/
                const getSizeOfBase64InMb=(stripedbase64)=>{
-                   // console.log(stripedbase64);
                     let fileSizeByte = atob(stripedbase64).length;  
-                    return (fileSizeByte / (1024 ** 2)).toFixed(3);
-                    
+                    return (fileSizeByte / (1024 ** 2)).toFixed(3);                    
                }
 
 
 
-               //Gamle ios versioner kan ikke lide foreach(). Derfor anvendes almindelig for loop
+               //Gamle ios versioner kan ikke lide foreach(). Derfor anvendes almindelig for-loop
                for (let index = 0; index < btnRotateImage.length; index++) {
                     const element = btnRotateImage[index];
                     element.addEventListener("click",rotate);                   
@@ -192,19 +198,20 @@
                     const resultBase64=await rotateBase64(imgThumnail.attributes.src.value, degrees);
                     imgThumnail.setAttribute('src', resultBase64);
                     const stripedbase64=stripBase64(resultBase64);
-                    hiddenBase64.value = stripedbase64;                                            
+                    hiddenBase64.value = stripedbase64;        
+                                 
                     spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
+                         
                 }
 
 
-
+               //Gamle ios versioner kan ikke lide foreach(). Derfor anvendes almindelig for-loop
                 for (let index = 0; index < btnUploadImage.length; index++) {
                     const element = btnUploadImage[index];
                     element.addEventListener("click",takefoto);                   
                 }
 
-              //Button take foto
-             // btnUploadImage.addEventListener("click",
+
               
              async function  takefoto (e){
                     e.preventDefault();
@@ -227,7 +234,8 @@
 
                                 //set size in info                                                    
                                 spanInfo.innerText=`Billede er klar til upload (${getSizeOfBase64InMb(stripedbase64)} Mb)`; 
-                                //divBtnRotate.style.display = "block";
+                                divBtnRotate.style.display = "block";
+                                spanInfo.style.display = "block";  
 
                                 //display img
                                 imgThumnail.src=base64;
